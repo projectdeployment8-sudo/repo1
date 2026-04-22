@@ -1,0 +1,11 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div class="card card-body text-center">
+    <h2>Order Placed Successfully 🎉</h2>
+    <p>Your order ID is <strong>#{{ order.id }}</strong>.</p>
+    <p>Status: <span class="badge bg-warning text-dark">{{ order.status }}</span></p>
+    <p>Total: <strong>${{ order.total }}</strong></p>
+    <a class="btn btn-primary" href="{% url 'product_list' %}">Back to Shop</a>
+</div>
+{% endblock %}
