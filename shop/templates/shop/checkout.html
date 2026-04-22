@@ -1,0 +1,34 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<h2>Checkout</h2>
+<div class="row">
+    <div class="col-md-7">
+        <form method="post" class="card card-body mb-3">
+            {% csrf_token %}
+            <h5>Shipping Details</h5>
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input class="form-control" type="text" name="customer_name" value="{{ form_data.customer_name }}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input class="form-control" type="email" name="customer_email" value="{{ form_data.customer_email }}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Address</label>
+                <textarea class="form-control" name="shipping_address" rows="3" required>{{ form_data.shipping_address }}</textarea>
+            </div>
+            <button class="btn btn-success" type="submit">Confirm Order</button>
+        </form>
+    </div>
+    <div class="col-md-5">
+        <div class="card card-body">
+            <h5>Payment (QR Placeholder)</h5>
+            <img src="https://dummyimage.com/240x240/000/fff&text=QR+PAYMENT" alt="QR payment placeholder" class="img-fluid mb-3">
+            <p class="text-muted">Scan this placeholder QR code to simulate payment.</p>
+            <h6>Order Total: ${{ total }}</h6>
+        </div>
+    </div>
+</div>
+{% endblock %}
