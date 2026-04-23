@@ -3,6 +3,12 @@
 {% block content %}
 <h1 class="mb-3">Electronics Store</h1>
 
+{% if not user.is_authenticated %}
+<div class="alert alert-info">
+    Please <a href="{% url 'login' %}">login</a> to add items to cart and checkout.
+</div>
+{% endif %}
+
 <form class="row g-2 mb-4" method="get">
     <div class="col-md-5">
         <input class="form-control" type="text" name="q" value="{{ query }}" placeholder="Search by product or brand">
@@ -33,7 +39,11 @@
                 <p class="mb-1"><strong>Category:</strong> {{ product.category }}</p>
                 <p class="h5 text-success">${{ product.price }}</p>
                 <p>{{ product.description|truncatechars:100 }}</p>
-                <a class="btn btn-sm btn-success" href="{% url 'add_to_cart' product.id %}">Add to Cart</a>
+                {% if user.is_authenticated %}
+                    <a class="btn btn-sm btn-success" href="{% url 'add_to_cart' product.id %}">Add to Cart</a>
+                {% else %}
+                    <a class="btn btn-sm btn-outline-secondary" href="{% url 'login' %}">Login to Buy</a>
+                {% endif %}
             </div>
         </div>
     </div>

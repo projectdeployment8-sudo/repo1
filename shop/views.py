@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
@@ -47,6 +48,7 @@ def product_list(request):
     return render(request, 'shop/product_list.html', context)
 
 
+@login_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     cart = _get_cart(request.session)
@@ -57,6 +59,7 @@ def add_to_cart(request, product_id):
     return redirect('product_list')
 
 
+@login_required
 def remove_from_cart(request, product_id):
     cart = _get_cart(request.session)
     key = str(product_id)
@@ -66,12 +69,14 @@ def remove_from_cart(request, product_id):
     return redirect('cart')
 
 
+@login_required
 def cart_view(request):
     cart = _get_cart(request.session)
     items, total = _cart_items(cart)
     return render(request, 'shop/cart.html', {'items': items, 'total': total})
 
 
+@login_required
 def checkout(request):
     cart = _get_cart(request.session)
     items, total = _cart_items(cart)
@@ -81,7 +86,7 @@ def checkout(request):
 
     if request.method == 'POST':
         name = request.POST.get('customer_name', '').strip()
-        email = request.POST.get('customer_email', '').strip()
+        email = request.POST.get('customer_email', '').strip() or request.user.email
         address = request.POST.get('shipping_address', '').strip()
 
         if not all([name, email, address]):
@@ -112,9 +117,14 @@ def checkout(request):
         request.session.modified = True
         return redirect('order_success', order_id=order.id)
 
-    return render(request, 'shop/checkout.html', {'items': items, 'total': total})
+    form_data = {
+        'customer_name': request.user.get_full_name() or request.user.username,
+        'customer_email': request.user.email,
+    }
+    return render(request, 'shop/checkout.html', {'items': items, 'total': total, 'form_data': form_data})
 
 
+@login_required
 def order_success(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     return render(request, 'shop/order_success.html', {'order': order})

@@ -4,6 +4,7 @@ A Django-based electronics e-commerce project with product listing, category fil
 
 ## Features
 - Product listing with category filter and search by name/brand.
+- User login required for cart and checkout.
 - Session-based shopping cart.
 - Checkout flow with QR payment placeholder.
 - Order creation and success page.
@@ -23,7 +24,6 @@ A Django-based electronics e-commerce project with product listing, category fil
    ```
 3. Apply migrations:
    ```bash
-   python manage.py makemigrations
    python manage.py migrate
    ```
 4. Create admin user:
@@ -37,4 +37,5 @@ A Django-based electronics e-commerce project with product listing, category fil
 
 Open:
 - Shop: http://127.0.0.1:8000/
+- Login: http://127.0.0.1:8000/accounts/login/
 - Admin: http://127.0.0.1:8000/admin/
