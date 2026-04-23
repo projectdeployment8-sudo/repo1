@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import ContactMessage, Order, OrderItem, Product
+from .models import ContactMessage, Order, OrderItem, Product, UserProfile
 
 
 @admin.register(Product)
@@ -8,6 +8,12 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'brand', 'category', 'price', 'stock', 'created_at')
     list_filter = ('category', 'brand')
     search_fields = ('name', 'brand')
+
+
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'phone')
+    search_fields = ('user__username', 'user__email', 'phone')
 
 
 class OrderItemInline(admin.TabularInline):

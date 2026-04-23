@@ -1,16 +1,19 @@
 {% extends 'shop/base.html' %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card card-body">
-            <h3 class="mb-3">Create Account</h3>
-            <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-success">Sign up</button>
-            </form>
+<div class="auth-wrap">
+    <div class="auth-card card card-body mx-auto">
+        <h3 class="mb-2 text-center">Create Your Account</h3>
+        <p class="text-center text-muted">Signup with username, email, and phone.</p>
+        <div class="d-flex justify-content-center mb-3">
+            <a class="btn btn-outline-primary btn-sm" href="{% url 'login' %}">Quick Switch: Login</a>
+            <a class="btn btn-success btn-sm ms-2" href="{% url 'signup' %}">Signup</a>
         </div>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-gradient w-100">Create Account</button>
+        </form>
     </div>
 </div>
 {% endblock %}

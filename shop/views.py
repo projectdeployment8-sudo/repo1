@@ -3,13 +3,12 @@ from decimal import Decimal
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.forms import AuthenticationForm
 from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import ContactForm, SignupForm
-from .models import Order, OrderItem, Product
+from .forms import ContactForm, LoginForm, SignupForm
+from .models import Order, OrderItem, Product, UserProfile
 
 
 def _get_cart(session):
@@ -24,13 +23,7 @@ def _cart_items(cart):
         quantity = cart.get(str(product.id), 0)
         line_total = product.price * quantity
         total += line_total
-        items.append(
-            {
-                'product': product,
-                'quantity': quantity,
-                'line_total': line_total,
-            }
-        )
+        items.append({'product': product, 'quantity': quantity, 'line_total': line_total})
     return items, total
 
 
@@ -53,23 +46,33 @@ def product_list(request):
     return render(request, 'shop/product_list.html', context)
 
 
+def user_login(request):
+    if request.user.is_authenticated:
+        return redirect('product_list')
+
+    form = LoginForm(request, data=request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        login(request, form.get_user())
+        return redirect(request.POST.get('next') or 'product_list')
+    return render(request, 'registration/login.html', {'form': form})
+
+
 def signup(request):
     if request.user.is_authenticated:
         return redirect('product_list')
 
-    if request.method == 'POST':
-        form = SignupForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, 'Account created successfully. You are now logged in.')
-            return redirect('product_list')
-    else:
-        form = SignupForm()
+    form = SignupForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        user = form.save()
+        UserProfile.objects.create(user=user, phone=form.cleaned_data['phone'])
+        login(request, user)
+        messages.success(request, 'Account created successfully. You are now logged in.')
+        return redirect('product_list')
 
     return render(request, 'registration/signup.html', {'form': form})
 
 
+@login_required
 def contact(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
@@ -78,12 +81,12 @@ def contact(request):
             messages.success(request, 'Thanks for contacting us. We received your details.')
             return redirect('contact')
     else:
-        initial = {}
-        if request.user.is_authenticated:
-            initial = {
-                'name': request.user.get_full_name() or request.user.username,
-                'email': request.user.email,
-            }
+        profile = getattr(request.user, 'profile', None)
+        initial = {
+            'name': request.user.get_full_name() or request.user.username,
+            'email': request.user.email,
+            'phone': profile.phone if profile else '',
+        }
         form = ContactForm(initial=initial)
 
     return render(request, 'shop/contact.html', {'form': form})
@@ -93,7 +96,7 @@ def staff_login(request):
     if request.user.is_authenticated and request.user.is_staff:
         return redirect('/admin/')
 
-    form = AuthenticationForm(request, data=request.POST or None)
+    form = LoginForm(request, data=request.POST or None)
     if request.method == 'POST' and form.is_valid():
         user = form.get_user()
         if user.is_staff:
@@ -158,11 +161,7 @@ def checkout(request):
 
         if not all([name, email, phone, address, payment_reference]) or not payment_submitted:
             messages.error(request, 'Please complete all checkout fields and confirm QR payment submission.')
-            return render(
-                request,
-                'shop/checkout.html',
-                {'items': items, 'total': total, 'form_data': request.POST},
-            )
+            return render(request, 'shop/checkout.html', {'items': items, 'total': total, 'form_data': request.POST})
 
         with transaction.atomic():
             for item in items:
@@ -195,9 +194,11 @@ def checkout(request):
         request.session.modified = True
         return redirect('order_success', order_id=order.id)
 
+    profile = getattr(request.user, 'profile', None)
     form_data = {
         'customer_name': request.user.get_full_name() or request.user.username,
         'customer_email': request.user.email,
+        'customer_phone': profile.phone if profile else '',
     }
     return render(request, 'shop/checkout.html', {'items': items, 'total': total, 'form_data': form_data})
 

@@ -1,23 +1,18 @@
 # Electronics E-commerce Website (Django)
 
-A Django-based electronics e-commerce project with attractive landing page, category filtering, search, cart, checkout with QR payment confirmation, user signup/login, contact form, and admin operations.
+A Django-based electronics e-commerce project with attractive landing page, product browsing, cart and checkout, signup/login, and admin operations.
 
 ## Features
-- User signup and login.
-- Separate staff/admin login route.
+- User signup with phone number.
+- User login using username, email, or phone number.
+- Separate admin login link (`/staff-login/`) not shown in main navbar.
 - Product listing with category filter and search by name/brand.
 - Stock support for products (visible/editable by admins).
 - Session-based shopping cart.
 - Checkout flow with detailed customer info and QR payment reference submission.
 - Payment verification flag for admins.
-- Contact page for user queries.
+- Contact page available after login.
 - Admin dashboard to manage products, orders, stock, and contact messages.
-
-## Tech Stack
-- Python
-- Django
-- SQLite
-- HTML/CSS + Bootstrap
 
 ## Run Locally
 1. Create and activate virtual environment.
@@ -43,5 +38,5 @@ Open:
 - User Login: http://127.0.0.1:8000/accounts/login/
 - User Signup: http://127.0.0.1:8000/signup/
 - Staff Login: http://127.0.0.1:8000/staff-login/
-- Contact Page: http://127.0.0.1:8000/contact/
+- Contact Page: http://127.0.0.1:8000/contact/ (login required)
 - Admin Panel: http://127.0.0.1:8000/admin/
