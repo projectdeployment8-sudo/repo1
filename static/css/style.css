@@ -1,0 +1,10 @@
+body { background: linear-gradient(135deg, #f8fafc, #eef2ff); }
+.hero {
+  background: radial-gradient(circle at top right, #2563eb, #1e293b);
+  color: #fff;
+  padding: 2.5rem;
+  border-radius: 1rem;
+  margin-bottom: 1.5rem;
+}
+.card { border: none; box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08); }
+.navbar { box-shadow: 0 8px 16px rgba(2, 6, 23, 0.2); }
