@@ -6,7 +6,7 @@
     <div class="col-md-7">
         <form method="post" class="card card-body mb-3">
             {% csrf_token %}
-            <h5>Shipping Details</h5>
+            <h5>Shipping & Contact Details</h5>
             <div class="mb-3">
                 <label class="form-label">Name</label>
                 <input class="form-control" type="text" name="customer_name" value="{{ form_data.customer_name }}" required>
@@ -16,17 +16,35 @@
                 <input class="form-control" type="email" name="customer_email" value="{{ form_data.customer_email }}" required>
             </div>
             <div class="mb-3">
+                <label class="form-label">Phone</label>
+                <input class="form-control" type="text" name="customer_phone" value="{{ form_data.customer_phone }}" required>
+            </div>
+            <div class="mb-3">
                 <label class="form-label">Address</label>
                 <textarea class="form-control" name="shipping_address" rows="3" required>{{ form_data.shipping_address }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Order Note</label>
+                <textarea class="form-control" name="customer_note" rows="2">{{ form_data.customer_note }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Payment Reference / Transaction ID</label>
+                <input class="form-control" type="text" name="payment_reference" value="{{ form_data.payment_reference }}" required>
+            </div>
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" name="payment_submitted" id="payment_submitted" required>
+                <label class="form-check-label" for="payment_submitted">
+                    I have completed the QR payment and submitted reference.
+                </label>
             </div>
             <button class="btn btn-success" type="submit">Confirm Order</button>
         </form>
     </div>
     <div class="col-md-5">
         <div class="card card-body">
-            <h5>Payment (QR Placeholder)</h5>
+            <h5>Payment QR</h5>
             <img src="https://dummyimage.com/240x240/000/fff&text=QR+PAYMENT" alt="QR payment placeholder" class="img-fluid mb-3">
-            <p class="text-muted">Scan this placeholder QR code to simulate payment.</p>
+            <p class="text-muted">After payment, enter transaction ID and tick confirmation.</p>
             <h6>Order Total: ${{ total }}</h6>
         </div>
     </div>

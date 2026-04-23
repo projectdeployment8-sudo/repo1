@@ -1,11 +1,11 @@
 from django.contrib import admin
 
-from .models import Order, OrderItem, Product
+from .models import ContactMessage, Order, OrderItem, Product
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'brand', 'category', 'price', 'created_at')
+    list_display = ('name', 'brand', 'category', 'price', 'stock', 'created_at')
     list_filter = ('category', 'brand')
     search_fields = ('name', 'brand')
 
@@ -13,13 +13,28 @@ class ProductAdmin(admin.ModelAdmin):
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
     extra = 0
-    readonly_fields = ('product', 'quantity', 'unit_price')
-    can_delete = False
 
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'customer_name', 'customer_email', 'total', 'status', 'created_at')
-    list_filter = ('status', 'created_at')
-    search_fields = ('customer_name', 'customer_email')
+    list_display = (
+        'id',
+        'customer_name',
+        'customer_email',
+        'customer_phone',
+        'total',
+        'payment_submitted',
+        'payment_verified',
+        'status',
+        'created_at',
+    )
+    list_filter = ('status', 'payment_submitted', 'payment_verified', 'created_at')
+    search_fields = ('customer_name', 'customer_email', 'payment_reference')
     inlines = [OrderItemInline]
+
+
+@admin.register(ContactMessage)
+class ContactMessageAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'phone', 'subject', 'created_at')
+    search_fields = ('name', 'email', 'subject')
+    list_filter = ('created_at',)

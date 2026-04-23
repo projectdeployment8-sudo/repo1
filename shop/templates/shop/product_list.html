@@ -1,11 +1,14 @@
 {% extends 'shop/base.html' %}
 
 {% block content %}
-<h1 class="mb-3">Electronics Store</h1>
+<div class="hero">
+    <h1>Upgrade Your Electronics</h1>
+    <p class="mb-0">Best deals on TVs, laptops, mobiles, and accessories with secure QR-based checkout.</p>
+</div>
 
 {% if not user.is_authenticated %}
 <div class="alert alert-info">
-    Please <a href="{% url 'login' %}">login</a> to add items to cart and checkout.
+    Please <a href="{% url 'login' %}">login</a> or <a href="{% url 'signup' %}">create an account</a> to save cart and checkout.
 </div>
 {% endif %}
 
@@ -39,10 +42,17 @@
                 <p class="mb-1"><strong>Category:</strong> {{ product.category }}</p>
                 <p class="h5 text-success">${{ product.price }}</p>
                 <p>{{ product.description|truncatechars:100 }}</p>
-                {% if user.is_authenticated %}
-                    <a class="btn btn-sm btn-success" href="{% url 'add_to_cart' product.id %}">Add to Cart</a>
+                {% if user.is_staff %}
+                    <p><strong>Stock:</strong> {{ product.stock }}</p>
+                {% endif %}
+                {% if product.stock > 0 %}
+                    {% if user.is_authenticated %}
+                        <a class="btn btn-sm btn-success" href="{% url 'add_to_cart' product.id %}">Add to Cart</a>
+                    {% else %}
+                        <a class="btn btn-sm btn-outline-secondary" href="{% url 'login' %}">Login to Buy</a>
+                    {% endif %}
                 {% else %}
-                    <a class="btn btn-sm btn-outline-secondary" href="{% url 'login' %}">Login to Buy</a>
+                    <span class="badge bg-danger">Out of stock</span>
                 {% endif %}
             </div>
         </div>
