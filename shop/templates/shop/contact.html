@@ -1,0 +1,17 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card card-body">
+            <h3>Contact Us</h3>
+            <p>Share your query and we will help you with products, orders, or payment verification.</p>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn btn-primary" type="submit">Send Message</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
